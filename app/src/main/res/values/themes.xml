@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FirebaseAuthTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">#FFFCF5</item>
+    </style>
+
+    <style name="Theme.TaskManager" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
