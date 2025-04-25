@@ -30,37 +30,34 @@ fun AuthScreen(
     val context = LocalContext.current
     val auth = remember { FirebaseAuth.getInstance() }
 
-    // Если пользователь уже авторизован — сразу переходим
-    LaunchedEffect(Unit) {
-        if (auth.currentUser != null) {
-            onAuthenticated()
-        }
-    }
-
     val launcher = rememberLauncherForActivityResult(FirebaseAuthUIActivityResultContract()) { result ->
         val response = result.idpResponse
         if (result.resultCode == Activity.RESULT_OK) {
             onAuthenticated()
-        } else {
-            val error = response?.error?.message ?: "Ошибка входа"
         }
     }
 
-    // Провайдеры входа
     val providers = listOf(
         AuthUI.IdpConfig.GoogleBuilder().build(),
         AuthUI.IdpConfig.EmailBuilder().build(),
     )
 
-    LaunchedEffect(Unit) {
-        val signInIntent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .setLogo(R.drawable.ic_logo)
-            .setIsSmartLockEnabled(false)
-            .setTheme(R.style.FirebaseAuthTheme)
-            .build()
+    var launched by remember { mutableStateOf(false) }
 
-        launcher.launch(signInIntent)
+    LaunchedEffect(auth.currentUser) {
+        if (auth.currentUser != null) {
+            onAuthenticated()
+        } else if (!launched) {
+            launched = true
+            val signInIntent = AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .setLogo(R.drawable.ic_logo)
+                .setIsSmartLockEnabled(false)
+                .setTheme(R.style.FirebaseAuthTheme)
+                .build()
+            launcher.launch(signInIntent)
+        }
     }
 }
+
