@@ -7,10 +7,13 @@ import com.example.taskmanager.data.model.TaskPriority
 import com.example.taskmanager.data.model.TaskStatus
 import com.example.taskmanager.data.model.TaskUrgency
 import com.example.taskmanager.data.repository.TaskRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TaskViewModel(
+@HiltViewModel
+class TaskViewModel @Inject constructor(
     private val repository: TaskRepository
 ) : ViewModel() {
 
@@ -67,21 +70,21 @@ class TaskViewModel(
     fun addTask(task: Task) {
         viewModelScope.launch {
             repository.insertTask(task)
-            loadAllTasks() // перезагружаем список
+            loadAllTasks()
         }
     }
 
     fun updateTask(task: Task) {
         viewModelScope.launch {
             repository.updateTask(task)
-            loadAllTasks() // перезагружаем список
+            loadAllTasks()
         }
     }
 
     fun deleteTask(task: Task) {
         viewModelScope.launch {
             repository.deleteTask(task)
-            loadAllTasks() // перезагружаем список
+            loadAllTasks()
         }
     }
 
