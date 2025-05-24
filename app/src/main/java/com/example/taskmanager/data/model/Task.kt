@@ -26,4 +26,8 @@ data class Task(
             else -> TaskUrgency.MEDIUM
         }
     }
+
+    fun isOverdue(currentTimeMillis: Long = System.currentTimeMillis()): Boolean {
+        return deadline != null && deadline < currentTimeMillis && !isDone
+    }
 }

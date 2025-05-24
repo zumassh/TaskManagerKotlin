@@ -14,7 +14,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.taskmanager.navigation.AppNavGraph
 import com.example.taskmanager.presentation.theme.TaskManagerTheme
 import com.google.firebase.FirebaseApp
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private var firebaseInitialized = false

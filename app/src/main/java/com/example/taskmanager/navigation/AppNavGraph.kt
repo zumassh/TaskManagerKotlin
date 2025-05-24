@@ -1,6 +1,5 @@
 package com.example.taskmanager.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.NavigationBar
@@ -13,6 +12,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,6 +22,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.taskmanager.presentation.auth.AuthScreen
 import com.example.taskmanager.presentation.tasks.TaskScreen
 import com.example.taskmanager.R
+import com.example.taskmanager.presentation.stats.StatsScreen
+import com.example.taskmanager.presentation.tasks.AddTaskScreen
+import com.example.taskmanager.presentation.tasks.TaskViewModel
 import com.example.taskmanager.presentation.theme.lightAccent
 import com.google.firebase.auth.FirebaseAuth
 
@@ -57,7 +61,7 @@ fun AppNavGraph(
                 )
             }
             composable("tasks") {
-                TaskScreen()
+                TaskScreen(navController)
             }
 
             composable("calendar") {
@@ -66,11 +70,24 @@ fun AppNavGraph(
             }
 
             composable("stats") {
-                Text("Статистика")
+                StatsScreen()
             }
 
             composable("exit") {
                 Text("Выход")
+            }
+
+            composable("add_task") {
+                val viewModel: TaskViewModel = hiltViewModel()
+                AddTaskScreen(
+                    onSave = { task ->
+                        viewModel.addTask(task)
+                        navController.popBackStack()
+                    },
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
     }
