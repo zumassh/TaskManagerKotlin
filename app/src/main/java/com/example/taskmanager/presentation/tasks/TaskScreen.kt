@@ -1,6 +1,7 @@
 package com.example.taskmanager.presentation.tasks
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,11 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.model.Task
+import com.example.taskmanager.data.model.TaskStatus
+import com.example.taskmanager.data.model.TaskUrgency
+import com.example.taskmanager.data.model.isDone
 import com.example.taskmanager.presentation.theme.mediumAccent
 import com.example.taskmanager.presentation.theme.textColor
 
@@ -102,24 +107,80 @@ fun TaskScreen(navController: NavHostController, viewModel: TaskViewModel = hilt
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(tasks.filter { it.title.contains(searchQuery, ignoreCase = true) }) { task ->
-                TaskItem(task)
+                TaskItem(
+                    task = task,
+                    onToggleDone = { viewModel.updateTask(it) },
+                    onClick = { navController.navigate("edit_task/${task.id}") }
+                )
             }
         }
     }
 }
 
 @Composable
-fun TaskItem(task: Task) {
+fun TaskItem(
+    task: Task,
+    onToggleDone: (Task) -> Unit,
+    onClick: () -> Unit
+) {
+    val backgroundColor = when {
+        task.isDone -> Color(0xFFDDDDDD)
+        task.calculateUrgency() == TaskUrgency.OVERDUE -> Color(0xFFEE99B7)
+        task.calculateUrgency() == TaskUrgency.CRITICAL -> Color(0xFFFEBDA1)
+        task.calculateUrgency() == TaskUrgency.HIGH || task.calculateUrgency() == TaskUrgency.MEDIUM -> Color(0xFFB9FBE4)
+        task.calculateUrgency() == TaskUrgency.WITHOUT_DEADLINE -> Color(0xFFB7E6F8)
+        else -> mediumAccent
+    }
+
+    val textStyle = if (task.isDone) {
+        MaterialTheme.typography.titleMedium.copy(textDecoration = TextDecoration.LineThrough)
+    } else {
+        MaterialTheme.typography.titleMedium
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = mediumAccent),
+            .padding(vertical = 4.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = task.title, style = MaterialTheme.typography.titleMedium, color = textColor)
-            Text(text = task.description ?: "", style = MaterialTheme.typography.bodyMedium, color = textColor)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = task.title,
+                    style = textStyle,
+                    color = textColor
+                )
+                Text(
+                    text = task.description ?: "",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        textDecoration = if (task.isDone) TextDecoration.LineThrough else null
+                    ),
+                    color = textColor
+                )
+            }
+
+            Checkbox(
+                checked = task.isDone,
+                onCheckedChange = { checked ->
+                    val updatedTask = task.copy(
+                        status = if (checked) TaskStatus.DONE else TaskStatus.TO_DO
+                    )
+                    onToggleDone(updatedTask)
+                },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = textColor,
+                    uncheckedColor = textColor
+                )
+            )
         }
     }
 }

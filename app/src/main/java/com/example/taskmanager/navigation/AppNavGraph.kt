@@ -8,6 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,7 @@ import com.example.taskmanager.presentation.tasks.TaskScreen
 import com.example.taskmanager.R
 import com.example.taskmanager.presentation.stats.StatsScreen
 import com.example.taskmanager.presentation.tasks.AddTaskScreen
+import com.example.taskmanager.presentation.tasks.EditTaskScreen
 import com.example.taskmanager.presentation.tasks.TaskViewModel
 import com.example.taskmanager.presentation.theme.lightAccent
 import com.google.firebase.auth.FirebaseAuth
@@ -89,6 +91,32 @@ fun AppNavGraph(
                     }
                 )
             }
+
+            composable("edit_task/{taskId}") { backStackEntry ->
+                val viewModel: TaskViewModel = hiltViewModel()
+                val taskId = backStackEntry.arguments?.getString("taskId")?.toIntOrNull()
+                val taskList by viewModel.tasks.collectAsState()
+                val task = taskList.find { it.id == taskId }
+
+                if (task != null) {
+                    EditTaskScreen(
+                        task = task,
+                        onSave = {
+                            viewModel.updateTask(it)
+                            navController.popBackStack()
+                        },
+                        onDelete = {
+                            viewModel.deleteTask(task)
+                            navController.popBackStack()
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
+                } else {
+                    // можно показать временное сообщение или заглушку
+                    Text("Задача не найдена")
+                }
+            }
+
         }
     }
 }
@@ -167,3 +195,4 @@ data class BottomNavItem(
     val iconActiveRes: Int? = null,
     val isExit: Boolean = false
 )
+

@@ -13,7 +13,6 @@ data class Task(
     val status: TaskStatus = TaskStatus.TO_DO,
     val priority: TaskPriority = TaskPriority.MEDIUM,
     val createdAt: Long = System.currentTimeMillis(),
-    val isDone: Boolean = false
 ) {
     fun calculateUrgency(currentTimeMillis: Long = System.currentTimeMillis()): TaskUrgency {
         if (deadline == null) return TaskUrgency.WITHOUT_DEADLINE
@@ -31,3 +30,7 @@ data class Task(
         return deadline != null && deadline < currentTimeMillis && !isDone
     }
 }
+
+
+val Task.isDone: Boolean
+    get() = status == TaskStatus.DONE
