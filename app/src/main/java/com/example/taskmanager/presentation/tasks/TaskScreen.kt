@@ -1,5 +1,6 @@
 package com.example.taskmanager.presentation.tasks
 
+import TaskFilter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,8 +30,9 @@ import com.example.taskmanager.presentation.theme.textColor
 
 @Composable
 fun TaskScreen(navController: NavHostController, viewModel: TaskViewModel = hiltViewModel()) {
-    val tasks by viewModel.tasks.collectAsState()
+    val tasks by viewModel.filteredAndSortedTasks.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+    var showFilters by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -72,7 +74,7 @@ fun TaskScreen(navController: NavHostController, viewModel: TaskViewModel = hilt
             Spacer(modifier = Modifier.width(8.dp))
 
             IconButton(
-                onClick = { /* TODO: открыть фильтры */ },
+                onClick = { showFilters = true },
                 modifier = Modifier
                     .background(
                         color = mediumAccent,
@@ -114,6 +116,15 @@ fun TaskScreen(navController: NavHostController, viewModel: TaskViewModel = hilt
                 )
             }
         }
+    }
+    if (showFilters) {
+        TaskFilter(
+            viewModel = viewModel,
+            onApply = {
+                showFilters = false
+            },
+            onDismiss = { showFilters = false }
+        )
     }
 }
 

@@ -5,5 +5,17 @@ enum class TaskUrgency {
     HIGH,
     MEDIUM,
     WITHOUT_DEADLINE,
-    OVERDUE
+    OVERDUE;
+
+    companion object {
+        fun getDisplayName(urgency: TaskUrgency): String {
+            return when (urgency) {
+                CRITICAL -> "Критическая"
+                HIGH -> "Высокая"
+                MEDIUM -> "Средняя"
+                WITHOUT_DEADLINE -> "Без дедлайна"
+                OVERDUE -> "Просроченная"
+            }
+        }
+    }
 }

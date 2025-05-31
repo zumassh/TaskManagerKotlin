@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class TaskViewModel @Inject constructor(
     private val repository: TaskRepository
@@ -28,6 +29,103 @@ class TaskViewModel @Inject constructor(
 
     private val _pendingTasks = MutableStateFlow(0)
     val pendingTasks: StateFlow<Int> = _pendingTasks.asStateFlow()
+
+    data class TaskFilters(
+        val priorities: Set<TaskPriority> = TaskPriority.values().toSet(),
+        val urgencies: Set<TaskUrgency> = TaskUrgency.values().toSet(),
+        val statuses: Set<TaskStatus> = TaskStatus.values().toSet()
+    )
+
+    data class TaskSort(
+        val field: SortField = SortField.URGENCY,
+        val order: SortOrder = SortOrder.DESCENDING
+    )
+
+    enum class SortField { URGENCY, PRIORITY, STATUS, CREATION_DATE }
+    enum class SortOrder { ASCENDING, DESCENDING }
+
+    fun getSortFieldDisplayName(field: SortField): String {
+        return when (field) {
+            SortField.URGENCY -> "Срочность"
+            SortField.PRIORITY -> "Приоритет"
+            SortField.STATUS -> "Статус"
+            SortField.CREATION_DATE -> "Дата создания"
+        }
+    }
+
+    fun getSortOrderDisplayName(order: SortOrder): String {
+        return when (order) {
+            SortOrder.ASCENDING -> "По возрастанию"
+            SortOrder.DESCENDING -> "По убыванию"
+        }
+    }
+
+    private val _filters = MutableStateFlow(TaskFilters())
+    val filters: StateFlow<TaskFilters> = _filters.asStateFlow()
+
+    private val _sort = MutableStateFlow(TaskSort())
+    val sort: StateFlow<TaskSort> = _sort.asStateFlow()
+
+    val filteredAndSortedTasks: StateFlow<List<Task>> = combine(
+        _tasks,
+        _filters,
+        _sort
+    ) { tasks, filters, sort ->
+        tasks
+            .filter { task ->
+                filters.priorities.contains(task.priority) &&
+                        filters.statuses.contains(task.status) &&
+                        filters.urgencies.contains(task.calculateUrgency())
+            }
+            .sortedWith(getComparator(sort))
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    fun updateFilters(
+        priorities: Set<TaskPriority>? = null,
+        urgencies: Set<TaskUrgency>? = null,
+        statuses: Set<TaskStatus>? = null
+    ) {
+        _filters.update { current ->
+            current.copy(
+                priorities = priorities ?: current.priorities,
+                urgencies = urgencies ?: current.urgencies,
+                statuses = statuses ?: current.statuses
+            )
+        }
+    }
+
+    fun updateSort(field: SortField? = null, order: SortOrder? = null) {
+        _sort.update { current ->
+            current.copy(
+                field = field ?: current.field,
+                order = order ?: current.order
+            )
+        }
+    }
+
+    private fun getComparator(sort: TaskSort): Comparator<Task> {
+        val comparator = when (sort.field) {
+            SortField.URGENCY -> compareBy<Task> { it.calculateUrgency().ordinal }
+            SortField.PRIORITY -> compareBy<Task> { it.priority.ordinal }
+            SortField.STATUS -> compareBy<Task> { it.status.ordinal }
+            SortField.CREATION_DATE -> compareBy<Task> { it.createdAt }
+        }
+
+        return if (sort.order == SortOrder.DESCENDING) {
+            comparator.reversed()
+        } else {
+            comparator
+        }
+    }
+
+    fun applyFilters() {
+        _filters.value = _filters.value.copy()
+        _sort.value = _sort.value.copy()
+    }
 
     init {
         loadAllTasks()
