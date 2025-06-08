@@ -21,15 +21,6 @@ class TaskViewModel @Inject constructor(
     private val _tasks = MutableStateFlow<List<Task>>(emptyList())
     val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
 
-    private val _totalTasks = MutableStateFlow(0)
-    val totalTasks: StateFlow<Int> = _totalTasks.asStateFlow()
-
-    private val _completedTasks = MutableStateFlow(0)
-    val completedTasks: StateFlow<Int> = _completedTasks.asStateFlow()
-
-    private val _pendingTasks = MutableStateFlow(0)
-    val pendingTasks: StateFlow<Int> = _pendingTasks.asStateFlow()
-
     data class TaskFilters(
         val priorities: Set<TaskPriority> = TaskPriority.values().toSet(),
         val urgencies: Set<TaskUrgency> = TaskUrgency.values().toSet(),
@@ -129,7 +120,6 @@ class TaskViewModel @Inject constructor(
 
     init {
         loadAllTasks()
-        loadStats()
     }
 
     fun loadAllTasks() {
@@ -183,24 +173,6 @@ class TaskViewModel @Inject constructor(
         viewModelScope.launch {
             repository.deleteTask(task)
             loadAllTasks()
-        }
-    }
-
-    private fun loadStats() {
-        viewModelScope.launch {
-            repository.getTotalTasksCount().collect { count ->
-                _totalTasks.value = count
-            }
-        }
-        viewModelScope.launch {
-            repository.getCompletedTasksCount().collect { count ->
-                _completedTasks.value = count
-            }
-        }
-        viewModelScope.launch {
-            repository.getPendingTasksCount().collect { count ->
-                _pendingTasks.value = count
-            }
         }
     }
 }

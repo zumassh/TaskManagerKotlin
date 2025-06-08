@@ -208,7 +208,7 @@ fun StatusDropdown(selected: TaskStatus, onSelected: (TaskStatus) -> Unit) {
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth() // растягивает меню
+            modifier = Modifier.fillMaxWidth()
         ) {
             TaskStatus.values().forEach {
                 DropdownMenuItem(
@@ -217,7 +217,7 @@ fun StatusDropdown(selected: TaskStatus, onSelected: (TaskStatus) -> Unit) {
                         onSelected(it)
                         expanded = false
                     },
-                    modifier = Modifier.fillMaxWidth() // растягивает сам пункт
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

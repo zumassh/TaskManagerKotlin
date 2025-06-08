@@ -1,18 +1,18 @@
 package com.example.taskmanager.data.model
 
 enum class TaskPriority {
-    VERY_HIGH,
-    HIGH,
+    LOW,
     MEDIUM,
-    LOW;
+    HIGH,
+    VERY_HIGH;
 
     companion object {
         fun getDisplayName(priority: TaskPriority): String {
             return when (priority) {
-                VERY_HIGH -> "Очень высокая"
-                HIGH -> "Высокая"
-                MEDIUM -> "Средняя"
                 LOW -> "Низкая"
+                MEDIUM -> "Средняя"
+                HIGH -> "Высокая"
+                VERY_HIGH -> "Очень высокая"
             }
         }
     }

@@ -178,44 +178,47 @@ fun TaskFilter(
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                     CheckboxWithText(
-                        text = "критическая",
-                        checked = currentFilters.urgencies.contains(TaskUrgency.CRITICAL),
+                        text = "просроченная",
+                        checked = currentFilters.urgencies.contains(TaskUrgency.OVERDUE),
                         onCheckedChange = { checked ->
                             viewModel.updateFilters(
                                 urgencies = if (checked) {
-                                    currentFilters.urgencies + TaskUrgency.CRITICAL
+                                    currentFilters.urgencies + TaskUrgency.OVERDUE
                                 } else {
-                                    currentFilters.urgencies - TaskUrgency.CRITICAL
+                                    currentFilters.urgencies - TaskUrgency.OVERDUE
                                 }
                             )
                         }
                     )
+
                     CheckboxWithText(
-                        text = "высокая",
-                        checked = currentFilters.urgencies.contains(TaskUrgency.HIGH),
+                        text = "срочная",
+                        checked = currentFilters.urgencies.contains(TaskUrgency.URGENT),
                         onCheckedChange = { checked ->
                             viewModel.updateFilters(
                                 urgencies = if (checked) {
-                                    currentFilters.urgencies + TaskUrgency.HIGH
+                                    currentFilters.urgencies + TaskUrgency.URGENT
                                 } else {
-                                    currentFilters.urgencies - TaskUrgency.HIGH
+                                    currentFilters.urgencies - TaskUrgency.URGENT
                                 }
                             )
                         }
                     )
+
                     CheckboxWithText(
-                        text = "средняя",
-                        checked = currentFilters.urgencies.contains(TaskUrgency.MEDIUM),
+                        text = "не срочная",
+                        checked = currentFilters.urgencies.contains(TaskUrgency.NOT_URGENT),
                         onCheckedChange = { checked ->
                             viewModel.updateFilters(
                                 urgencies = if (checked) {
-                                    currentFilters.urgencies + TaskUrgency.MEDIUM
+                                    currentFilters.urgencies + TaskUrgency.NOT_URGENT
                                 } else {
-                                    currentFilters.urgencies - TaskUrgency.MEDIUM
+                                    currentFilters.urgencies - TaskUrgency.NOT_URGENT
                                 }
                             )
                         }
                     )
+
                     CheckboxWithText(
                         text = "без срока",
                         checked = currentFilters.urgencies.contains(TaskUrgency.WITHOUT_DEADLINE),
@@ -225,19 +228,6 @@ fun TaskFilter(
                                     currentFilters.urgencies + TaskUrgency.WITHOUT_DEADLINE
                                 } else {
                                     currentFilters.urgencies - TaskUrgency.WITHOUT_DEADLINE
-                                }
-                            )
-                        }
-                    )
-                    CheckboxWithText(
-                        text = "просроченная",
-                        checked = currentFilters.urgencies.contains(TaskUrgency.OVERDUE),
-                        onCheckedChange = { checked ->
-                            viewModel.updateFilters(
-                                urgencies = if (checked) {
-                                    currentFilters.urgencies + TaskUrgency.OVERDUE
-                                } else {
-                                    currentFilters.urgencies - TaskUrgency.OVERDUE
                                 }
                             )
                         }

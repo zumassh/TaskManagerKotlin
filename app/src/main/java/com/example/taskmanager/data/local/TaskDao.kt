@@ -25,12 +25,4 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE priority = :priority ORDER BY createdAt DESC")
     fun getTasksByPriority(priority: String): Flow<List<Task>>
 
-    @Query("SELECT COUNT(*) FROM tasks")
-    fun getTotalTasksCount(): Flow<Int>
-
-    @Query("SELECT COUNT(*) FROM tasks WHERE status = 'DONE'")
-    fun getCompletedTasksCount(): Flow<Int>
-
-    @Query("SELECT COUNT(*) FROM tasks WHERE status != 'DONE'")
-    fun getPendingTasksCount(): Flow<Int>
 }

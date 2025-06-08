@@ -1,21 +1,20 @@
 package com.example.taskmanager.data.model
 
 enum class TaskUrgency {
-    CRITICAL,
-    HIGH,
-    MEDIUM,
     WITHOUT_DEADLINE,
+    NOT_URGENT,
+    URGENT,
     OVERDUE;
 
     companion object {
         fun getDisplayName(urgency: TaskUrgency): String {
             return when (urgency) {
-                CRITICAL -> "Критическая"
-                HIGH -> "Высокая"
-                MEDIUM -> "Средняя"
-                WITHOUT_DEADLINE -> "Без дедлайна"
+                WITHOUT_DEADLINE -> "Без срока"
+                NOT_URGENT -> "Не срочная"
+                URGENT -> "Срочная"
                 OVERDUE -> "Просроченная"
             }
         }
     }
 }
+

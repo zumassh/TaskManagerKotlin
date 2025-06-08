@@ -137,8 +137,8 @@ fun TaskItem(
     val backgroundColor = when {
         task.isDone -> Color(0xFFDDDDDD)
         task.calculateUrgency() == TaskUrgency.OVERDUE -> Color(0xFFEE99B7)
-        task.calculateUrgency() == TaskUrgency.CRITICAL -> Color(0xFFFEBDA1)
-        task.calculateUrgency() == TaskUrgency.HIGH || task.calculateUrgency() == TaskUrgency.MEDIUM -> Color(0xFFB9FBE4)
+        task.calculateUrgency() == TaskUrgency.URGENT -> Color(0xFFFEBDA1)
+        task.calculateUrgency() == TaskUrgency.NOT_URGENT -> Color(0xFFB9FBE4)
         task.calculateUrgency() == TaskUrgency.WITHOUT_DEADLINE -> Color(0xFFB7E6F8)
         else -> mediumAccent
     }

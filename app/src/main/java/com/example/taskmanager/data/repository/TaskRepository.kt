@@ -20,18 +20,6 @@ class TaskRepository(
         return taskDao.getTasksByPriority(priority)
     }
 
-    fun getTotalTasksCount(): Flow<Int> {
-        return taskDao.getTotalTasksCount()
-    }
-
-    fun getCompletedTasksCount(): Flow<Int> {
-        return taskDao.getCompletedTasksCount()
-    }
-
-    fun getPendingTasksCount(): Flow<Int> {
-        return taskDao.getPendingTasksCount()
-    }
-
     suspend fun insertTask(task: Task) {
         taskDao.insertTask(task)
     }

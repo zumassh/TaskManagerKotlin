@@ -20,9 +20,8 @@ data class Task(
 
         return when {
             timeLeft < 0 -> TaskUrgency.OVERDUE
-            timeLeft <= 24 * 60 * 60 * 1000 -> TaskUrgency.CRITICAL // меньше суток
-            timeLeft <= 3 * 24 * 60 * 60 * 1000 -> TaskUrgency.HIGH // меньше 3 дней
-            else -> TaskUrgency.MEDIUM
+            timeLeft <= 24 * 60 * 60 * 1000 -> TaskUrgency.URGENT   // меньше суток (мс)
+            else -> TaskUrgency.NOT_URGENT
         }
     }
 
