@@ -36,7 +36,6 @@ fun StatsScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Статистика",

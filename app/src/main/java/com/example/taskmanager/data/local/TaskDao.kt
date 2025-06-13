@@ -25,4 +25,16 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE priority = :priority ORDER BY createdAt DESC")
     fun getTasksByPriority(priority: String): Flow<List<Task>>
 
+    @Query(
+        """
+      SELECT * FROM tasks
+      WHERE deadline BETWEEN :start AND :end
+      ORDER BY createdAt DESC
+      """
+    )
+    fun getTasksByDeadlineDay(start: Long, end: Long): Flow<List<Task>>
+
+    @Query("SELECT deadline FROM tasks WHERE deadline IS NOT NULL")
+    fun getAllDeadlines(): Flow<List<Long>>
+
 }

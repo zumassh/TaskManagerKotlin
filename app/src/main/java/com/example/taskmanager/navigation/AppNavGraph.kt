@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.taskmanager.presentation.auth.AuthScreen
 import com.example.taskmanager.presentation.tasks.TaskScreen
 import com.example.taskmanager.R
+import com.example.taskmanager.presentation.calendar.CalendarScreen
 import com.example.taskmanager.presentation.stats.StatsScreen
 import com.example.taskmanager.presentation.tasks.AddTaskScreen
 import com.example.taskmanager.presentation.tasks.EditTaskScreen
@@ -67,8 +68,7 @@ fun AppNavGraph(
             }
 
             composable("calendar") {
-                // пока можно просто временный текст
-                Text("Календарь")
+                CalendarScreen(navController)
             }
 
             composable("stats") {

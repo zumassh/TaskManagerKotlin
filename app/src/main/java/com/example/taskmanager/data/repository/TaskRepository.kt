@@ -3,8 +3,9 @@ package com.example.taskmanager.data.repository
 import com.example.taskmanager.data.local.TaskDao
 import com.example.taskmanager.data.model.Task
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class TaskRepository(
+class TaskRepository @Inject constructor(
     private val taskDao: TaskDao
 ) {
 
