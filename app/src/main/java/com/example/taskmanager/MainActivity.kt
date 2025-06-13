@@ -1,6 +1,5 @@
 package com.example.taskmanager
 
-import UrgentTaskWorker
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
-import androidx.work.*
 import com.example.taskmanager.navigation.AppNavGraph
 import com.example.taskmanager.presentation.theme.TaskManagerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +20,7 @@ import java.util.concurrent.TimeUnit
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
+import com.example.taskmanager.worker.UrgentTaskWorker
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
