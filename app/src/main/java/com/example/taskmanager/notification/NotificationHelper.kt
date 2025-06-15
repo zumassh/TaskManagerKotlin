@@ -26,7 +26,7 @@ class NotificationHelper(private val context: Context) {
         }
     }
 
-    fun showUrgentNotification(taskId: Int, taskTitle: String) {
+    fun showUrgentNotification(taskId: String, taskTitle: String) {
         val notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_logo)
             .setContentTitle("Дедлайн близко!")
@@ -34,6 +34,7 @@ class NotificationHelper(private val context: Context) {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
-        notificationManager.notify(taskId, notification)
+        val notificationId = taskId.hashCode()
+        notificationManager.notify(notificationId, notification)
     }
 }

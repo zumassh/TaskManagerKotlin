@@ -6,7 +6,7 @@ import com.example.taskmanager.data.model.Task
 
 @Database(
     entities = [Task::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class TaskDatabase : RoomDatabase() {

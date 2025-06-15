@@ -2,11 +2,12 @@ package com.example.taskmanager.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity(tableName = "tasks")
 data class Task(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString(),
     val title: String,
     val description: String?,
     val deadline: Long?,
@@ -20,7 +21,7 @@ data class Task(
 
         return when {
             timeLeft < 0 -> TaskUrgency.OVERDUE
-            timeLeft <= 24 * 60 * 60 * 1000 -> TaskUrgency.URGENT   // меньше суток (мс)
+            timeLeft <= 24 * 60 * 60 * 1000 -> TaskUrgency.URGENT   // меньше суток
             else -> TaskUrgency.NOT_URGENT
         }
     }
@@ -33,3 +34,35 @@ data class Task(
 
 val Task.isDone: Boolean
     get() = status == TaskStatus.DONE
+
+data class TaskDto(
+    val id: String = UUID.randomUUID().toString(),
+    val title: String = "",
+    val description: String? = null,
+    val deadline: Long? = null,
+    val status: String = "TO_DO",
+    val priority: String = "MEDIUM",
+    val createdAt: Long = System.currentTimeMillis()
+) {
+    fun toTask(): Task = Task(
+        id = id,
+        title = title,
+        description = description,
+        deadline = deadline,
+        status = TaskStatus.valueOf(status),
+        priority = TaskPriority.valueOf(priority),
+        createdAt = createdAt
+    )
+
+    companion object {
+        fun fromTask(task: Task): TaskDto = TaskDto(
+            id = task.id,
+            title = task.title,
+            description = task.description,
+            deadline = task.deadline,
+            status = task.status.name,
+            priority = task.priority.name,
+            createdAt = task.createdAt
+        )
+    }
+}

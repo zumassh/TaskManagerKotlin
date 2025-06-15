@@ -94,7 +94,7 @@ fun AppNavGraph(
 
             composable("edit_task/{taskId}") { backStackEntry ->
                 val viewModel: TaskViewModel = hiltViewModel()
-                val taskId = backStackEntry.arguments?.getString("taskId")?.toIntOrNull()
+                val taskId = backStackEntry.arguments?.getString("taskId")
                 val taskList by viewModel.tasks.collectAsState()
                 val task = taskList.find { it.id == taskId }
 

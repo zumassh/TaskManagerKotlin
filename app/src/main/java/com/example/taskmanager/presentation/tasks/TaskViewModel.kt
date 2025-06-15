@@ -35,22 +35,6 @@ class TaskViewModel @Inject constructor(
     enum class SortField { URGENCY, PRIORITY, STATUS, CREATION_DATE }
     enum class SortOrder { ASCENDING, DESCENDING }
 
-    fun getSortFieldDisplayName(field: SortField): String {
-        return when (field) {
-            SortField.URGENCY -> "Срочность"
-            SortField.PRIORITY -> "Приоритет"
-            SortField.STATUS -> "Статус"
-            SortField.CREATION_DATE -> "Дата создания"
-        }
-    }
-
-    fun getSortOrderDisplayName(order: SortOrder): String {
-        return when (order) {
-            SortOrder.ASCENDING -> "По возрастанию"
-            SortOrder.DESCENDING -> "По убыванию"
-        }
-    }
-
     private val _filters = MutableStateFlow(TaskFilters())
     val filters: StateFlow<TaskFilters> = _filters.asStateFlow()
 
@@ -120,37 +104,13 @@ class TaskViewModel @Inject constructor(
 
     init {
         loadAllTasks()
+        syncTasksFromFirestore()
     }
 
     fun loadAllTasks() {
         viewModelScope.launch {
             repository.getAllTasks().collect { taskList ->
                 _tasks.value = taskList
-            }
-        }
-    }
-
-    fun filterTasksByStatus(status: TaskStatus) {
-        viewModelScope.launch {
-            repository.getTasksByStatus(status.name).collect { filteredList ->
-                _tasks.value = filteredList
-            }
-        }
-    }
-
-    fun filterTasksByPriority(priority: TaskPriority) {
-        viewModelScope.launch {
-            repository.getTasksByPriority(priority.name).collect { filteredList ->
-                _tasks.value = filteredList
-            }
-        }
-    }
-
-    fun filterTasksByUrgency(urgency: TaskUrgency) {
-        viewModelScope.launch {
-            repository.getAllTasks().collect { taskList ->
-                val filtered = taskList.filter { it.calculateUrgency() == urgency }
-                _tasks.value = filtered
             }
         }
     }
@@ -174,5 +134,9 @@ class TaskViewModel @Inject constructor(
             repository.deleteTask(task)
             loadAllTasks()
         }
+    }
+
+    fun syncTasksFromFirestore() {
+        repository.fetchTasksFromFirestore()
     }
 }
